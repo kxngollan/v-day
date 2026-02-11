@@ -106,10 +106,12 @@ export default function ValentinePage() {
       >
         <div style={{ textAlign: "center" }}>
           <div style={{ fontSize: 52, lineHeight: 1 }}>💘</div>
-          <h1 style={{ margin: "12px 0 6px", fontSize: 34 }}>
+          <h1 style={{ margin: "12px 0 6px", fontSize: 34, color: "black" }}>
             Will you be my valentine?
           </h1>
-          <p style={{ margin: 0, opacity: 0.75 }}>(Choose wisely 😇)</p>
+          <p style={{ margin: 0, opacity: 0.9, color: "gray" }}>
+            (Choose wisely 😇)
+          </p>
         </div>
 
         <div
