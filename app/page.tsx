@@ -1,65 +1,284 @@
-import Image from "next/image";
+"use client";
+import React, { useEffect, useRef, useState } from "react";
 
-export default function Home() {
+export default function ValentinePage() {
+  const playRef = useRef(null);
+  const noRef = useRef(null);
+
+  const [noPos, setNoPos] = useState({ x: 0, y: 0 });
+  const [ready, setReady] = useState(false);
+  const [saidYes, setSaidYes] = useState(false);
+  const [forceYes, setForceYes] = useState(false);
+
+  const clamp = (v, min, max) => Math.max(min, Math.min(max, v));
+
+  const setCenteredNo = () => {
+    const exists = document.querySelector(".nobtn");
+    if (exists) {
+      exists.remove();
+    }
+    const play = playRef.current;
+    const noBtn = noRef.current;
+    if (!play || !noBtn) return;
+
+    const p = play.getBoundingClientRect();
+    const b = noBtn.getBoundingClientRect();
+    const pad = 12;
+
+    const x = clamp(p.width / 2 - b.width / 2, pad, p.width - b.width - pad);
+    const y = clamp(
+      p.height / 2 - b.height / 2,
+      pad,
+      p.height - b.height - pad,
+    );
+
+    setNoPos({ x, y });
+    setReady(true);
+  };
+
+  useEffect(() => {
+    const onResize = () => setCenteredNo();
+    window.addEventListener("resize", onResize);
+    return () => window.removeEventListener("resize", onResize);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  const moveNo = () => {
+    const play = playRef.current;
+    const noBtn = noRef.current;
+    if (!play || !noBtn) return;
+
+    const p = play.getBoundingClientRect();
+    const b = noBtn.getBoundingClientRect();
+    const pad = 12;
+
+    const maxX = Math.max(pad, p.width - b.width - pad);
+    const maxY = Math.max(pad, p.height - b.height - pad);
+
+    let x = noPos.x;
+    let y = noPos.y;
+
+    for (let i = 0; i < 12; i++) {
+      const nx = pad + Math.random() * (maxX - pad);
+      const ny = pad + Math.random() * (maxY - pad);
+      if (Math.hypot(nx - noPos.x, ny - noPos.y) > 70) {
+        x = nx;
+        y = ny;
+        break;
+      }
+      x = nx;
+      y = ny;
+    }
+
+    setNoPos({ x, y });
+  };
+
   return (
-    <div className="flex min-h-screen items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex min-h-screen w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the page.tsx file.
+    <div
+      style={{
+        minHeight: "100vh",
+        display: "grid",
+        placeItems: "center",
+        padding: 24,
+        background:
+          "radial-gradient(circle at top, #ffe4f1 0%, #fff 45%, #ffeef6 100%)",
+        fontFamily:
+          'ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, "Helvetica Neue", Arial',
+      }}
+    >
+      <div
+        style={{
+          width: "min(720px, 92vw)",
+          height: "min(460px, 75vh)",
+          borderRadius: 24,
+          position: "relative",
+          padding: 28,
+          background: "rgba(255,255,255,0.8)",
+          border: "1px solid rgba(255, 45, 134, 0.25)",
+          boxShadow: "0 20px 60px rgba(255, 105, 180, 0.15)",
+          overflow: "hidden",
+        }}
+      >
+        <div style={{ textAlign: "center" }}>
+          <div style={{ fontSize: 52, lineHeight: 1 }}>💘</div>
+          <h1 style={{ margin: "12px 0 6px", fontSize: 34 }}>
+            Will you be my valentine?
           </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
-          </p>
+          <p style={{ margin: 0, opacity: 0.75 }}>(Choose wisely 😇)</p>
         </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
-            />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
+
+        <div
+          ref={playRef}
+          style={{
+            position: "absolute",
+            left: 16,
+            right: 16,
+            top: 150,
+            bottom: 110,
+            borderRadius: 18,
+          }}
+        >
+          {!forceYes ? (
+            <button
+              ref={noRef}
+              onClick={() => {
+                setForceYes(true);
+              }}
+              onMouseEnter={moveNo}
+              onMouseDown={moveNo}
+              onTouchStart={(e) => {
+                e.preventDefault();
+                moveNo();
+              }}
+              style={{
+                position: "absolute",
+                left: noPos.x,
+                top: noPos.y,
+                opacity: ready ? 1 : 0,
+                border: "1px solid rgba(0,0,0,0.12)",
+                padding: "14px 22px",
+                borderRadius: 999,
+                background: "white",
+                color: "#222",
+                fontWeight: 700,
+                fontSize: 16,
+                cursor: "pointer",
+                boxShadow: "0 10px 26px rgba(0,0,0,0.10)",
+                transition:
+                  "left 160ms ease, top 160ms ease, opacity 120ms ease",
+                userSelect: "none",
+                WebkitTapHighlightColor: "transparent",
+              }}
+            >
+              No 🙃
+            </button>
+          ) : (
+            ""
+          )}
         </div>
-      </main>
+
+        <div
+          style={{
+            position: "absolute",
+            left: 0,
+            right: 0,
+            bottom: 28,
+            display: "flex",
+            justifyContent: "center",
+            gap: 14,
+          }}
+        >
+          <button
+            onClick={() => setSaidYes(true)}
+            style={{
+              border: "none",
+              padding: "14px 22px",
+              borderRadius: 999,
+              background: "#ff2d86",
+              color: "white",
+              fontWeight: 700,
+              fontSize: 16,
+              cursor: "pointer",
+              boxShadow: "0 12px 30px rgba(255,45,134,0.35)",
+            }}
+          >
+            Yes
+          </button>
+          <button
+            className="nobtn"
+            onClick={setCenteredNo}
+            onMouseEnter={setCenteredNo}
+            onMouseDown={setCenteredNo}
+            onTouchStart={(e) => {
+              e.preventDefault();
+              setCenteredNo();
+            }}
+            style={{
+              border: "1px solid rgba(0,0,0,0.12)",
+              padding: "14px 22px",
+              borderRadius: 999,
+              background: "white",
+              fontWeight: 700,
+              cursor: "pointer",
+              boxShadow: "0 10px 26px rgba(0,0,0,0.10)",
+              transition: "left 160ms ease, top 160ms ease, opacity 120ms ease",
+              userSelect: "none",
+              WebkitTapHighlightColor: "transparent",
+            }}
+          >
+            No 🙃
+          </button>
+          {forceYes ? (
+            <p
+              style={{
+                height: "100%",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                fontSize: 24,
+                fontWeight: 700,
+                color: "#ff2d86",
+                margin: 0,
+                padding: "14px 0",
+                opacity: 0.9,
+              }}
+            >
+              You do not have a choice!
+            </p>
+          ) : (
+            ""
+          )}
+        </div>
+
+        {saidYes && (
+          <div
+            role="dialog"
+            aria-modal="true"
+            onClick={() => setSaidYes(false)}
+            style={{
+              position: "absolute",
+              inset: 0,
+              background: "rgba(0,0,0,0.25)",
+              display: "grid",
+              placeItems: "center",
+              padding: 16,
+            }}
+          >
+            <div
+              onClick={(e) => e.stopPropagation()}
+              style={{
+                width: "min(520px, 92vw)",
+                background: "white",
+                borderRadius: 20,
+                padding: 22,
+                textAlign: "center",
+                boxShadow: "0 22px 70px rgba(0,0,0,0.25)",
+                border: "1px solid rgba(255, 45, 134, 0.25)",
+                color: "#ff2d86",
+              }}
+            >
+              <div style={{ fontSize: 44, marginBottom: 6 }}>🎉💞</div>
+              <h2 style={{ margin: "6px 0 8px" }}>YAY! It’s a date!</h2>
+              <p style={{ margin: 0, opacity: 0.8 }}>Best. Valentine. Ever.</p>
+              <button
+                onClick={() => setSaidYes(false)}
+                style={{
+                  marginTop: 16,
+                  border: "none",
+                  padding: "12px 18px",
+                  borderRadius: 999,
+                  background: "#111",
+                  color: "white",
+                  fontWeight: 700,
+                  cursor: "pointer",
+                }}
+              >
+                Close
+              </button>
+            </div>
+          </div>
+        )}
+      </div>
     </div>
   );
 }
