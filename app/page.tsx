@@ -10,15 +10,18 @@ export default function ValentinePage() {
   const [saidYes, setSaidYes] = useState(false);
   const [forceYes, setForceYes] = useState(false);
 
-  const clamp = (v, min, max) => Math.max(min, Math.min(max, v));
+  const clamp = (v: number, min: number, max: number) =>
+    Math.max(min, Math.min(max, v));
 
   const setCenteredNo = () => {
     const exists = document.querySelector(".nobtn");
     if (exists) {
       exists.remove();
     }
-    const play = playRef.current;
-    const noBtn = noRef.current;
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const play: any = playRef.current;
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const noBtn: any = noRef.current;
     if (!play || !noBtn) return;
 
     const p = play.getBoundingClientRect();
@@ -44,8 +47,10 @@ export default function ValentinePage() {
   }, []);
 
   const moveNo = () => {
-    const play = playRef.current;
-    const noBtn = noRef.current;
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const play: any = playRef.current;
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const noBtn: any = noRef.current;
     if (!play || !noBtn) return;
 
     const p = play.getBoundingClientRect();
